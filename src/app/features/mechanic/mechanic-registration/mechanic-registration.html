@@ -1,0 +1,167 @@
+<!-- mechanic-registration.component.html -->
+<div class="setup-page">
+  <div class="setup-card">
+    <header class="card-header">
+      <h2>Mechanic Setup</h2>
+      <div class="steps">
+        <span class="step" [class.active]="currentStep===1">1</span>
+        <span class="step" [class.active]="currentStep===2">2</span>
+        <span class="step" [class.active]="currentStep===3">3</span>
+      </div>
+    </header>
+
+    <div class="progress-bar">
+      <div class="progress" [style.width.%]="(currentStep / totalSteps) * 100"></div>
+    </div>
+
+    <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" class="form-body">
+      <!-- STEP 1 - Personal -->
+      @if(currentStep===1) {
+        <section class="section">
+          <h3>Personal information</h3>
+
+          <div class="grid">
+            <label class="field">
+              <span>National ID number *</span>
+              <input formControlName="nationalIdNumber" placeholder="8 digits" />
+              @if(submitted && setupForm.get('nationalIdNumber')?.invalid) {
+                <small class="error">National ID is required (8 digits)</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Alternative Phone</span>
+              <input formControlName="alternativePhone" placeholder="0712345678" />
+              @if(setupForm.get('alternativePhone')?.errors?.['pattern'] && setupForm.get('alternativePhone')?.touched) {
+                <small class="error">Must be a valid 10-digit phone</small>
+              }
+            </label>
+
+            <label class="field full">
+              <span>Physical Address *</span>
+              <input formControlName="physicalAddress" placeholder="Street, Area, City" />
+              @if(submitted && setupForm.get('physicalAddress')?.invalid) {
+                <small class="error">Physical address is required</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Emergency Contact Name *</span>
+              <input formControlName="emergencyContactName" />
+              @if(submitted && setupForm.get('emergencyContactName')?.invalid) {
+                <small class="error">Required</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Emergency Contact Number *</span>
+              <input formControlName="emergencyContactNumber" placeholder="0712345678" />
+              @if(submitted && setupForm.get('emergencyContactNumber')?.invalid) {
+                <small class="error">Required (10 digits)</small>
+              }
+            </label>
+
+            <label class="field full">
+              <span>Profile Picture</span>
+              <input type="file" (change)="onFileChange($event, 'profilePic')" accept="image/*" />
+            </label>
+          </div>
+        </section>
+      }
+
+      <!-- STEP 2 - Professional -->
+      @if(currentStep===2) {
+        <section class="section">
+          <h3>Professional qualifications</h3>
+
+          <div class="grid">
+            <label class="field">
+              <span>Years of Experience *</span>
+              <input formControlName="yearsOfExperience" type="number" min="0" />
+              @if(submitted && setupForm.get('yearsOfExperience')?.invalid) {
+                <small class="error">Required</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Vehicle Brands *</span>
+              <input formControlName="vehiclebrands" placeholder="Toyota, Nissan..." />
+              @if(submitted && setupForm.get('vehiclebrands')?.invalid) {
+                <small class="error">Required</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Specialization Area *</span>
+              <input formControlName="specializationArea" placeholder="Engine, Electrical..." />
+              @if(submitted && setupForm.get('specializationArea')?.invalid) {
+                <small class="error">Required</small>
+              }
+            </label>
+
+            <label class="field">
+              <span>Garage ID *</span>
+              <input formControlName="garageId" placeholder="Affiliated Garage ID" />
+              @if(submitted && setupForm.get('garageId')?.invalid) {
+                <small class="error">Required</small>
+              }
+            </label>
+          </div>
+        </section>
+      }
+
+      <!-- STEP 3 - Documents -->
+      @if(currentStep===3) {
+        <section class="section">
+          <h3>Verification documents</h3>
+
+          <div class="grid">
+            <label class="field full">
+              <span>National ID Upload</span>
+              <input type="file" (change)="onFileChange($event, 'nationalIDPic')" accept=".pdf,.jpg,.png" />
+            </label>
+
+            <label class="field full">
+              <span>Police Clearance</span>
+              <input type="file" (change)="onFileChange($event, 'policeClearanceCertfificate')" accept=".pdf,.jpg,.png" />
+            </label>
+
+            <label class="field full">
+              <span>Certificates</span>
+              <input type="file" (change)="onFileChange($event, 'professionalCertificate')" accept=".pdf,.jpg,.png" />
+            </label>
+
+            <div class="review">
+              <h4>Review</h4>
+              <pre class="preview">{{ setupForm.value | json }}</pre>
+            </div>
+          </div>
+        </section>
+      }
+
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="prevStep()" [disabled]="currentStep===1">Back</button>
+
+        @if(currentStep < totalSteps) {
+          <button type="button" class="btn-primary" (click)="nextStep()">Next</button>
+        }
+
+        @if(currentStep === totalSteps) {
+          <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+            @if(!isSubmitting) {
+              <span>Submit</span>
+            }
+            @if(isSubmitting) {
+              <span>Submitting...</span>
+            }
+          </button>
+        }
+      </div>
+
+      @if(serverError) {
+        <div class="error-box">{{ serverError }}</div>
+      }
+    </form>
+  </div>
+</div>
+<router-outlet></router-outlet>

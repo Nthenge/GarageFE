@@ -1,0 +1,116 @@
+<header class="navbar">
+  <!-- Logo -->
+  <div class="logo">
+    <span class="logo-icon">🔧</span>
+    <span class="logo-text">Garage<span class="logo-accent">.</span></span>
+  </div>
+
+  <!-- Desktop Navigation -->
+  <!-- <nav class="desktop-nav">
+    <ul>
+      <li>
+        <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link" routerLink="/services" routerLinkActive="active">
+          <mat-icon>build</mat-icon>
+          <span>Services</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link" routerLink="/garages" routerLinkActive="active">
+          <mat-icon>garage</mat-icon>
+          <span>Garages</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link" routerLink="/about" routerLinkActive="active">
+          <mat-icon>info</mat-icon>
+          <span>About</span>
+        </a>
+      </li>
+    </ul>
+  </nav> -->  
+
+  <!-- Auth Buttons (Desktop) -->
+  <div class="auth-buttons desktop-auth">
+    <button class="btn-secondary" (click)="openRegister()">
+      <mat-icon>person_add</mat-icon>
+      Sign Up
+    </button>
+    <button class="btn-primary" (click)="openLogin()">
+      <mat-icon>login</mat-icon>
+      Log In
+    </button>
+  </div>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="menu-toggle" (click)="toggleSidenav()" [class.open]="sidenavOpen">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Mobile Sidebar Navigation -->
+  <div class="mobile-sidebar" [class.open]="sidenavOpen">
+    <div class="sidebar-overlay" (click)="toggleSidenav()"></div>
+    
+    <div class="sidebar-content">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="logo-icon">🔧</span>
+          <span class="logo-text">Garage<span class="logo-accent">Connect</span></span>
+        </div>
+        <button class="close-btn" (click)="toggleSidenav()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Sidebar Navigation -->
+      <!-- <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a class="sidebar-link" routerLink="/" (click)="toggleSidenav()">
+              <mat-icon>home</mat-icon>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a class="sidebar-link" routerLink="/services" (click)="toggleSidenav()">
+              <mat-icon>build</mat-icon>
+              <span>Services</span>
+            </a>
+          </li>
+          <li>
+            <a class="sidebar-link" routerLink="/garages" (click)="toggleSidenav()">
+              <mat-icon>garage</mat-icon>
+              <span>Garages</span>
+            </a>
+          </li>
+          <li>
+            <a class="sidebar-link" routerLink="/about" (click)="toggleSidenav()">
+              <mat-icon>info</mat-icon>
+              <span>About</span>
+            </a>
+          </li>
+        </ul>
+      </nav> -->
+
+      <!-- Sidebar Auth Buttons -->
+      <div class="sidebar-auth">
+        <button class="btn-secondary-mobile" (click)="openRegister(); toggleSidenav()">
+          <mat-icon>person_add</mat-icon>
+          Sign Up
+        </button>
+        <button class="btn-primary-mobile" (click)="openLogin(); toggleSidenav()">
+          <mat-icon>login</mat-icon>
+          Log In
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

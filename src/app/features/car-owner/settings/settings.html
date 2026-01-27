@@ -1,0 +1,82 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Settings</h1>
+    <p>Manage your account settings and preferences</p>
+  </div>
+
+  <div class="settings-grid">
+    <!-- Account Settings -->
+    <div class="settings-card">
+      <div class="card-icon">⚙️</div>
+      <h3>Account Settings</h3>
+      <p>Update your email, password, and account details</p>
+      <button class="settings-btn" routerLink="/car-owner/profile">
+        Manage Account →
+      </button>
+    </div>
+
+    <!-- Security -->
+    <div class="settings-card">
+      <div class="card-icon">🔒</div>
+      <h3>Security</h3>
+      <p>Change password and enable two-factor authentication</p>
+      <button class="settings-btn" (click)="openSecuritySettings()">
+        Security Settings →
+      </button>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-card">
+      <div class="card-icon">🔔</div>
+      <h3>Notifications</h3>
+      <p>Control email, SMS, and push notification preferences</p>
+      <button class="settings-btn" (click)="openNotificationSettings()">
+        Notification Settings →
+      </button>
+    </div>
+
+    <!-- Privacy -->
+    <div class="settings-card">
+      <div class="card-icon">🛡️</div>
+      <h3>Privacy</h3>
+      <p>Manage your data privacy and visibility settings</p>
+      <button class="settings-btn" (click)="openPrivacySettings()">
+        Privacy Settings →
+      </button>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="settings-card">
+      <div class="card-icon">💳</div>
+      <h3>Payment Methods</h3>
+      <p>Add, remove, or update your payment methods</p>
+      <button class="settings-btn" (click)="openPaymentSettings()">
+        Payment Settings →
+      </button>
+    </div>
+
+    <!-- Help & Support -->
+    <div class="settings-card">
+      <div class="card-icon">❓</div>
+      <h3>Help & Support</h3>
+      <p>Get help, view FAQs, or contact support team</p>
+      <button class="settings-btn" (click)="openSupport()">
+        Get Help →
+      </button>
+    </div>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="danger-zone">
+    <h3>Danger Zone</h3>
+    <div class="danger-content">
+      <div>
+        <h4>Delete Account</h4>
+        <p>Permanently delete your account and all associated data</p>
+      </div>
+      <button class="danger-btn" (click)="deleteAccount()">
+        Delete Account
+      </button>
+    </div>
+  </div>
+</div>

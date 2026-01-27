@@ -1,0 +1,66 @@
+<div class="management-container">
+  <div class="page-header">
+    <div>
+      <h1>Mechanics Management</h1>
+      <p>Manage your team of mechanics</p>
+    </div>
+    <button class="btn-primary" [routerLink]="['/garage-admin/add-mechanic']">
+      <span>+</span>
+      Add New Mechanic
+    </button>
+  </div>
+
+  <!-- Mechanics Grid -->
+  <div class="mechanics-grid">
+    @for (mechanic of mechanics; track mechanic.id) {
+      <div class="mechanic-card">
+        <div class="mechanic-card-header">
+          <div class="mechanic-avatar large">{{ mechanic.name[0] }}</div>
+          <div class="status-indicator" [class.active]="mechanic.isActive"></div>
+        </div>
+
+        <div class="mechanic-card-body">
+          <h3>{{ mechanic.name }}</h3>
+          <p class="mechanic-role">{{ mechanic.specialization }}</p>
+
+          <div class="mechanic-stats-row">
+            <div class="stat-mini">
+              <span class="stat-mini-label">Rating</span>
+              <span class="stat-mini-value">⭐ {{ mechanic.rating }}</span>
+            </div>
+            <div class="stat-mini">
+              <span class="stat-mini-label">Jobs</span>
+              <span class="stat-mini-value">{{ mechanic.completedJobs }}</span>
+            </div>
+          </div>
+
+          <div class="contact-info">
+            <div class="contact-row">
+              <span>📧</span>
+              <span>{{ mechanic.email }}</span>
+            </div>
+            <div class="contact-row">
+              <span>📞</span>
+              <span>{{ mechanic.phone }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mechanic-card-footer">
+          <button class="btn-icon-text" (click)="viewMechanic(mechanic)">
+            <span>👁️</span>
+            View
+          </button>
+          <button class="btn-icon-text" (click)="editMechanic(mechanic)">
+            <span>✏️</span>
+            Edit
+          </button>
+          <button class="btn-icon-text danger" (click)="removeMechanic(mechanic)">
+            <span>🗑️</span>
+            Remove
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,690 @@
+<!-- Intro Screen -->
+@if(currentStep === -1) {
+<div class="intro-screen">
+  <div class="intro-content">
+    <div class="intro-left">
+      <div class="intro-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      </div>
+      <h2>Set Up Your Garage</h2>
+      <p>Complete your garage registration to start managing mechanics and receiving service requests</p>
+      <button class="start-btn" (click)="nextStep()">
+        Get Started
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="intro-divider"></div>
+
+    <div class="intro-right">
+      <h3>Registration Steps</h3>
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div class="step-number">1</div>
+          <div class="step-info">
+            <h4>Business Information</h4>
+            <p>Name, registration, license details</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">2</div>
+          <div class="step-info">
+            <h4>Location & Contact</h4>
+            <p>Address, email, phone number</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">3</div>
+          <div class="step-info">
+            <h4>Operating Hours</h4>
+            <p>Days and hours of operation</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">4</div>
+          <div class="step-info">
+            <h4>Services Offered</h4>
+            <p>Select services your garage provides</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">5</div>
+          <div class="step-info">
+            <h4>Payment Information</h4>
+            <p>M-Pesa Paybill details</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">6</div>
+          <div class="step-info">
+            <h4>Verification Documents</h4>
+            <p>Business license upload</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Main Form -->
+@if(currentStep >= 0) {
+<div class="registration-container">
+  
+  <!-- Progress Header -->
+  <div class="progress-header">
+    <div class="progress-info">
+      <h2>{{steps[currentStep]}}</h2>
+      <p>Step {{currentStep + 1}} of {{maxSteps}}</p>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" [style.width.%]="progress"></div>
+    </div>
+  </div>
+
+  <!-- Step Indicators -->
+  <div class="step-indicators">
+    @for(step of steps; track step; let i = $index) {
+      <div class="step-indicator" 
+           [class.active]="i === currentStep"
+           [class.completed]="i < currentStep"
+           (click)="goToStep(i)">
+        <div class="step-circle">
+          @if(i < currentStep) {
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          } @else {
+            <span>{{i + 1}}</span>
+          }
+        </div>
+        <span class="step-label">{{step}}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Form Content -->
+  <form [formGroup]="form" class="form-container">
+    
+    <!-- Step 0: Business Information -->
+    @if(currentStep === 0) {
+      <div class="form-card">
+        <div class="form-section">
+          <div class="section-header">
+            <h3>Business Information</h3>
+            <p>Provide your garage's official business details</p>
+          </div>
+
+          <div class="form-group">
+            <label for="businessName">Business Name *</label>
+            <input 
+              id="businessName"
+              type="text" 
+              formControlName="businessName"
+              placeholder="e.g., City Auto Repairs"
+              class="form-input"
+              [class.invalid]="isFieldInvalid('businessName')"
+            />
+            @if(isFieldInvalid('businessName')) {
+              <small class="error-message">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Business name is required
+              </small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="registrationNumber">Business Registration Number *</label>
+            <input 
+              id="registrationNumber"
+              type="text" 
+              formControlName="registrationNumber"
+              placeholder="e.g., BN/2023/12345"
+              class="form-input"
+              [class.invalid]="isFieldInvalid('registrationNumber')"
+            />
+            @if(isFieldInvalid('registrationNumber')) {
+              <small class="error-message">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Registration number is required
+              </small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="licenseNumber">Business License Number *</label>
+            <input 
+              id="licenseNumber"
+              type="text" 
+              formControlName="licenseNumber"
+              placeholder="e.g., TL/2023/67890"
+              class="form-input"
+              [class.invalid]="isFieldInvalid('licenseNumber')"
+            />
+            @if(isFieldInvalid('licenseNumber')) {
+              <small class="error-message">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                License number is required
+              </small>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Step 1: Location & Contact -->
+    @if(currentStep === 1) {
+  <div class="form-card">
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Location & Contact</h3>
+        <p>Where can customers find you? Please capture your precise GPS coordinates.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Garage Coordinates *</label>
+        <div class="location-capture-container">
+          <div class="coords-display" [class.captured]="latitude && longitude">
+            @if(latitude && longitude) {
+              <div class="coords-info">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span>{{ latitude.toFixed(6) }}, {{ longitude.toFixed(6) }}</span>
+              </div>
+            } @else {
+              <span class="coord-placeholder">Coordinates not captured yet</span>
+            }
+          </div>
+          
+          <button type="button" class="get-coords-btn" (click)="getCurrentLocation()" [disabled]="isLocating">
+            @if(isLocating) {
+              <span class="spinner-small"></span>
+              <span>Locating...</span>
+            } @else {
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="22" y1="12" x2="18" y2="12"></line>
+                <line x1="6" y1="12" x2="2" y2="12"></line>
+                <line x1="12" y1="6" x2="12" y2="2"></line>
+                <line x1="12" y1="22" x2="12" y2="18"></line>
+              </svg>
+              <span>Get Coordinates</span>
+            }
+          </button>
+        </div>
+        @if(form.get('latitude')?.invalid && form.get('latitude')?.touched) {
+          <small class="error-message">GPS coordinates are required for service mapping</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="physicalAddress">Physical Business Address *</label>
+        <textarea 
+          id="physicalAddress"
+          formControlName="physicalAddress"
+          placeholder="Street, Building, Area, City"
+          class="form-textarea"
+          rows="3"
+          [class.invalid]="isFieldInvalid('physicalAddress')"
+        ></textarea>
+        @if(isFieldInvalid('physicalAddress')) {
+          <small class="error-message">Physical address is required</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="businessEmail">Business Email Address *</label>
+        <input 
+          id="businessEmail"
+          type="email" 
+          formControlName="businessEmail"
+          placeholder="contact@yourgarage.com"
+          class="form-input"
+          [class.invalid]="isFieldInvalid('businessEmail')"
+        />
+        @if(isFieldInvalid('businessEmail')) {
+          <small class="error-message">Valid email address is required</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number *</label>
+        <input 
+          id="phoneNumber"
+          type="tel" 
+          formControlName="phoneNumber"
+          placeholder="0712345678"
+          class="form-input"
+          [class.invalid]="isFieldInvalid('phoneNumber')"
+        />
+        @if(isFieldInvalid('phoneNumber')) {
+          <small class="error-message">Valid 10-digit phone number is required</small>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+    <!-- Step 2: Operating Hours -->
+    @if(currentStep === 2) {
+  <div class="form-card">
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Operating Hours & Experience</h3>
+        <p>Set your garage's working schedule and business tenure</p>
+      </div>
+
+      <div class="form-group">
+        <label>Operating Days *</label>
+        <div class="days-grid">
+          @for(day of weekDays; track day) {
+            <label class="day-card" [class.selected]="isDaySelected(day)">
+              <input 
+                type="checkbox" 
+                [checked]="isDaySelected(day)"
+                (change)="toggleDay(day)"
+              />
+              <span>{{day}}</span>
+            </label>
+          }
+        </div>
+        @if(form.get('operatingDays')?.invalid && form.get('operatingDays')?.touched) {
+          <small class="error-message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Select at least one operating day
+          </small>
+        }
+      </div>
+
+      <div class="time-selection">
+        <div class="form-group">
+          <label for="openingTime">Opening Time *</label>
+          <select 
+            id="openingTime"
+            formControlName="openingTime"
+            class="form-select"
+            [class.invalid]="isFieldInvalid('openingTime')"
+          >
+            <option value="">Select time</option>
+            @for(time of timeSlots; track time) {
+              <option [value]="time">{{time}}</option>
+            }
+          </select>
+        </div>
+        <span class="time-separator">to</span>
+        <div class="form-group">
+          <label for="closingTime">Closing Time *</label>
+          <select 
+            id="closingTime"
+            formControlName="closingTime"
+            class="form-select"
+            [class.invalid]="isFieldInvalid('closingTime')"
+          >
+            <option value="">Select time</option>
+            @for(time of timeSlots; track time) {
+              <option [value]="time">{{time}}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 1.5rem;">
+        <label for="yearsInOperation">Years in Operation *</label>
+        <input 
+          id="yearsInOperation"
+          type="number" 
+          formControlName="yearsInOperation"
+          placeholder="e.g., 5"
+          class="form-input"
+          [class.invalid]="isFieldInvalid('yearsInOperation')"
+        />
+        @if(isFieldInvalid('yearsInOperation')) {
+          <small class="error-message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Please provide the number of years your garage has been active
+          </small>
+        }
+      </div>
+
+      @if(isFieldInvalid('openingTime') || isFieldInvalid('closingTime')) {
+        <small class="error-message">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          Both opening and closing times are required
+        </small>
+      }
+    </div>
+  </div>
+}
+
+    <!-- Step 3: Services Offered -->
+   @if(currentStep === 3) {
+<div class="form-card">
+  <div class="form-section">
+    <div class="section-header">
+      <h3>Services Offered</h3>
+      <p>Select all services your garage provides</p>
+    </div>
+
+    <div class="services-table">
+      <div class="table-header-row">
+        <div class="col-check">Select</div>
+        <div class="col-info">Service Details</div>
+        <div class="col-price">Base Price</div>
+      </div>
+
+      @for(service of availableServices; track service.id) {
+        <label class="service-row" [class.selected]="isServiceSelected(service.id)">
+          <div class="col-check">
+            <input 
+              type="checkbox" 
+              [checked]="isServiceSelected(service.id)"
+              (change)="toggleService(service.id)"
+            />
+          </div>
+
+          <div class="col-info">
+            <h4 class="service-name">{{ service.serviceName }}</h4>
+            <p class="service-description">{{ service.description }}</p>
+          </div>
+
+          <div class="col-price">
+            <span class="price-tag">KES {{ service.price | number:'1.2-2' }}</span>
+          </div>
+        </label>
+      }
+    </div>
+
+    @if(form.get('services')?.invalid && form.get('services')?.touched) {
+      <small class="error-message">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        Select at least one service
+      </small>
+    }
+  </div>
+</div>
+}
+
+    <!-- Step 4: Payment Information -->
+    @if(currentStep === 4) {
+  <div class="form-card">
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Payment Information</h3>
+        <p>M-Pesa payment details for transactions</p>
+      </div>
+
+      <div class="payment-info-card">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 6v6l4 2"></path>
+        </svg>
+        <div>
+          <h4>Payment Details</h4>
+          <p>These details will be used for receiving payments from customers via Paybill or Till</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="paybillNumber">M-Pesa Paybill Number *</label>
+        <input 
+          id="paybillNumber"
+          type="text" 
+          formControlName="paybillNumber"
+          placeholder="e.g., 123456"
+          class="form-input"
+          [class.invalid]="isFieldInvalid('paybillNumber')"
+        />
+        @if(isFieldInvalid('paybillNumber')) {
+          <small class="error-message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Paybill number is required (min 5 digits)
+          </small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="mpesaTill">M-Pesa Till Number *</label>
+        <input 
+          id="mpesaTill"
+          type="text" 
+          formControlName="mpesaTill"
+          placeholder="e.g., 543210"
+          class="form-input"
+          [class.invalid]="isFieldInvalid('mpesaTill')"
+        />
+        @if(isFieldInvalid('mpesaTill')) {
+          <small class="error-message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Till number is required
+          </small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="accountNumber">Account Number *</label>
+        <input 
+          id="accountNumber"
+          type="text" 
+          formControlName="accountNumber"
+          placeholder="Account reference"
+          class="form-input"
+          [class.invalid]="isFieldInvalid('accountNumber')"
+        />
+        @if(isFieldInvalid('accountNumber')) {
+          <small class="error-message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Account number is required
+          </small>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+    <!-- Step 5: Verification Documents -->
+@if(currentStep === 5) {
+<div class="form-card">
+  <div class="form-section">
+    <div class="section-header">
+      <h3>Verification Documents</h3>
+      <p>Upload your business license, professional certificate, and facility photos for verification</p>
+    </div>
+
+    <div class="form-group">
+      <label>Business License *</label>
+      <div class="upload-card" (click)="licenseInput.click()">
+        <input #licenseInput type="file" (change)="onFileSelect($event, 'license')" accept="image/*,application/pdf" style="display: none" />
+        @if(!licenseFile) {
+        <div class="upload-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span class="upload-title">Upload Business License</span>
+          <span class="upload-formats">PNG, JPG or PDF (max 5MB)</span>
+        </div>
+        } @else {
+        <div class="file-preview">
+          <div class="file-info">
+            <span class="file-name">{{licenseFile.name}}</span>
+            <span class="file-size">{{formatFileSize(licenseFile.size)}}</span>
+          </div>
+          <button type="button" class="remove-btn" (click)="removeFile($event, 'license')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        }
+      </div>
+      @if(form.get('businessLicense')?.invalid && form.get('businessLicense')?.touched) {
+      <small class="error-message">Business license is required</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Professional Certificate *</label>
+      <div class="upload-card" (click)="certInput.click()">
+        <input #certInput type="file" (change)="onFileSelect($event, 'professionalCertificate')" accept="image/*,application/pdf" style="display: none" />
+        @if(!certificateFile) {
+        <div class="upload-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+            <path d="M22 19V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2z"></path>
+            <path d="M16 11l-5 5-3-3"></path>
+          </svg>
+          <span class="upload-title">Upload Professional Certificate</span>
+          <span class="upload-formats">PNG, JPG or PDF (max 5MB)</span>
+        </div>
+        } @else {
+        <div class="file-preview">
+          <div class="file-info">
+            <span class="file-name">{{certificateFile.name}}</span>
+            <span class="file-size">{{formatFileSize(certificateFile.size)}}</span>
+          </div>
+          <button type="button" class="remove-btn" (click)="removeFile($event, 'professionalCertificate')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        }
+      </div>
+      @if(form.get('professionalCertificate')?.invalid && form.get('professionalCertificate')?.touched) {
+      <small class="error-message">Professional certificate is required</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Facility/Garage Photo *</label>
+      <div class="upload-card" (click)="facilityInput.click()">
+        <input #facilityInput type="file" (change)="onFileSelect($event, 'facilityPhotos')" accept="image/*" style="display: none" />
+        @if(!facilityFile) {
+        <div class="upload-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span class="upload-title">Upload Garage Photos</span>
+          <span class="upload-formats">PNG or JPG (max 5MB)</span>
+        </div>
+        } @else {
+        <div class="file-preview">
+          <div class="file-info">
+            <span class="file-name">{{facilityFile.name}}</span>
+            <span class="file-size">{{formatFileSize(facilityFile.size)}}</span>
+          </div>
+          <button type="button" class="remove-btn" (click)="removeFile($event, 'facilityPhotos')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        }
+      </div>
+      @if(form.get('facilityPhotos')?.invalid && form.get('facilityPhotos')?.touched) {
+      <small class="error-message">Facility photo is required</small>
+      }
+    </div>
+
+    <div class="security-info">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <path d="M9 12l2 2 4-4"></path>
+      </svg>
+      <div>
+        <h4>Your Documents Are Secure</h4>
+        <p>All uploads are encrypted and stored securely. Documents are only used for verification purposes.</p>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+  </form>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button class="btn-secondary" (click)="prevStep()" [disabled]="currentStep === 0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back
+    </button>
+
+    @if (currentStep < steps.length - 1) {
+      <button class="btn-primary" (click)="nextStep()">
+        Next
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    }
+
+    @if (currentStep === steps.length - 1) {
+      <button class="btn-primary" (click)="submit()" [disabled]="isSubmitting">
+        @if(!isSubmitting) {
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Submit Application
+        } @else {
+          <span class="spinner-small"></span>
+          Submitting...
+        }
+      </button>
+    }
+  </div>
+
+</div>
+}

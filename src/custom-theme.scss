@@ -1,0 +1,41 @@
+@use '@angular/material' as mat;
+
+
+$my-primary: mat.$orange-palette;
+$my-tertiary: mat.$blue-palette; 
+
+/*theme */
+$my-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: $my-primary,
+    tertiary: $my-tertiary,
+  ),
+  typography: (
+    brand-family: 'Roboto, sans-serif',
+    bold-weight: 600,
+  ),
+  density: (
+    scale: 0
+  )
+));
+
+/* Apply theme styles globally */
+html {
+  @include mat.all-component-themes($my-theme);
+}
+
+/* 4. Body background */
+body {
+  // background-color: #ffffffee;
+  margin: 0;
+  scroll-behavior: smooth;
+  font-family: Roboto, sans-serif;
+}
+
+::ng-deep .custom-dialog-container .mat-mdc-dialog-surface {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fffaf5;
+}
+

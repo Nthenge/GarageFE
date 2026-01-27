@@ -1,0 +1,93 @@
+<div class="details-modal">
+  <div class="modal-header">
+    <div>
+      <h2>{{ serviceDetails?.serviceType }} Service</h2>
+      <p class="modal-subtitle">Complete service details and timeline</p>
+    </div>
+    <button class="close-btn" (click)="closeDialog()">✕</button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading details...</p>
+    </div>
+  } @else if (serviceDetails) {
+    <div class="modal-body">
+      <!-- Info Grid -->
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Garage</span>
+          <span class="info-value">{{ serviceDetails.garage }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Date</span>
+          <span class="info-value">{{ serviceDetails.date }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Status</span>
+          <span class="status-badge" [class]="serviceDetails.status.toLowerCase()">
+            {{ serviceDetails.status }}
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Price</span>
+          <span class="info-value price">KES {{ serviceDetails.price | number }}</span>
+        </div>
+      </div>
+
+      <!-- Issues Section -->
+      <div class="section">
+        <h3>Issues Addressed</h3>
+        @if (serviceDetails.issues?.length) {
+          <div class="issues-list">
+            @for (issue of serviceDetails.issues; track issue) {
+              <div class="issue-item">
+                <span class="issue-icon">✓</span>
+                <span>{{ issue }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-data">No issues recorded</p>
+        }
+      </div>
+
+      <!-- Notes Section -->
+      <div class="section">
+        <h3>Mechanic's Notes</h3>
+        <div class="notes-box">
+          {{ serviceDetails.notes || 'No notes provided by the mechanic.' }}
+        </div>
+      </div>
+
+      <!-- Review Section -->
+      <div class="section">
+        <h3>Your Review</h3>
+        @if (serviceDetails.review) {
+          <div class="review-box">
+            <div class="rating">
+              ⭐⭐⭐⭐⭐
+            </div>
+            <p>{{ serviceDetails.review }}</p>
+          </div>
+        } @else {
+          <div class="no-review">
+            <p>You haven't reviewed this service yet</p>
+            <button class="review-btn">Leave a Review</button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeDialog()">Close</button>
+      <button class="btn-primary">Download Invoice</button>
+    </div>
+  } @else {
+    <div class="error-state">
+      <span class="error-icon">⚠️</span>
+      <p>Error loading service details</p>
+    </div>
+  }
+</div>

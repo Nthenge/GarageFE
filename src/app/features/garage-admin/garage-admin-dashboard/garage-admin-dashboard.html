@@ -1,0 +1,619 @@
+<div class="dashboard-wrapper">
+  
+  <!-- Top Header -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <h1>{{ getPageTitle() }}</h1>
+    </div>
+    <div class="header-right">
+      <button class="notification-btn" (click)="toggleNotifications()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        @if(notificationCount > 0) {
+          <span class="badge">{{ notificationCount }}</span>
+        }
+      </button>
+      <div class="user-profile" (click)="toggleProfileMenu()">
+        <img src="assets/garage-icon.png" alt="Garage" class="header-avatar">
+        <div class="user-info">
+          <span class="user-name">{{ garageData?.businessName ?? 'Garage' }}</span>
+          <span class="user-role">Admin</span>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+      </svg>
+      @if(!sidebarCollapsed) {
+        <span>Garage Admin</span>
+      }
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a class="nav-link" [class.active]="currentView === 'dashboard'" (click)="setView('dashboard')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Dashboard</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'jobs'" (click)="setView('jobs')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Jobs</span>
+          @if(pendingJobsCount > 0) {
+            <span class="count-badge">{{ pendingJobsCount }}</span>
+          }
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'mechanics'" (click)="setView('mechanics')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Mechanics</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'services'" (click)="setView('services')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Services</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'revenue'" (click)="setView('revenue')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Revenue</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'profile'" (click)="setView('profile')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Profile</span>
+        }
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a class="nav-link" (click)="logout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Logout</span>
+        }
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    
+    <!-- Dashboard View -->
+    @if(currentView === 'dashboard') {
+      <div class="dashboard-container">
+        <div class="dashboard-left">
+          
+          <!-- Garage Overview Banner -->
+          <div class="quick-actions-banner garage-admin">
+            <div class="banner-content">
+              <h3>{{ garageData?.businessName ?? 'Your Garage' }}</h3>
+              <p>{{ activeMechanics }} mechanics • {{ activeJobs }} active jobs</p>
+            </div>
+            <!-- <button class="cta-btn" (click)="setView('mechanics')"> -->
+              <button class="cta-btn" (click)="navigateToMechanicManagement()">
+              Manage Mechanics →
+            </button>
+          </div>
+
+          <!-- Revenue Card -->
+          <div class="revenue-card">
+            <div class="revenue-header">
+              <h3>Revenue Overview</h3>
+              <select class="period-selector" [(ngModel)]="selectedPeriod" (change)="updateRevenue()">
+                <option value="month">This Month</option>
+                <option value="week">This Week</option>
+                <option value="today">Today</option>
+              </select>
+            </div>
+            <div class="revenue-stats">
+              <div class="revenue-item">
+                <span class="revenue-label">Total Revenue</span>
+                <span class="revenue-value">KES {{ totalRevenue | number }}</span>
+              </div>
+              <div class="revenue-item">
+                <span class="revenue-label">Completed Jobs</span>
+                <span class="revenue-value">{{ completedJobs }}</span>
+              </div>
+              <div class="revenue-item">
+                <span class="revenue-label">Avg. Job Value</span>
+                <span class="revenue-value">KES {{ avgJobValue | number }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Jobs Table -->
+          <div class="service-section">
+            <div class="section-header-row">
+              <h3>Active Jobs ({{ activeJobsList.length }})</h3>
+              <button class="btn-link" (click)="setView('jobs')">View All</button>
+            </div>
+            <div class="table-card">
+              @if(activeJobsList.length === 0) {
+                <div class="empty-state">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                  <p>No active jobs</p>
+                </div>
+              } @else {
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Customer</th>
+                      <th>Service</th>
+                      <th>Mechanic</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (job of activeJobsList.slice(0, 5); track job.id) {
+                      <tr>
+                        <td>
+                          <div class="customer-cell">
+                            <div class="customer-avatar">{{ job.customer[0] }}</div>
+                            <span>{{ job.customer }}</span>
+                          </div>
+                        </td>
+                        <td>{{ job.service }}</td>
+                        <td>{{ job.mechanic }}</td>
+                        <td>
+                          <span class="status-badge" [class]="job.status.toLowerCase()">
+                            {{ job.status }}
+                          </span>
+                        </td>
+                        <td>
+                          <button class="btn-icon" (click)="viewJobDetails(job)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                              <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-right">
+          
+          <!-- Top Mechanics -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3>Top Mechanics</h3>
+              <a class="view-all" (click)="setView('mechanics')">View All</a>
+            </div>
+            <div class="card-body">
+              @if(topMechanics.length === 0) {
+                <div class="empty-state-small">
+                  <p>No mechanics added yet</p>
+                  <button class="btn-small" (click)="setView('mechanics')">Add Mechanic</button>
+                </div>
+              } @else {
+                @for (mechanic of topMechanics; track mechanic.id) {
+                  <div class="mechanic-item">
+                    <div class="mechanic-avatar">{{ mechanic.name[0] }}</div>
+                    <div class="mechanic-details">
+                      <span class="mechanic-name">{{ mechanic.name }}</span>
+                      <div class="mechanic-stats">
+                        <span>⭐ {{ mechanic.rating }}</span>
+                        <span>{{ mechanic.completedJobs }} jobs</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Services -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3>Our Services</h3>
+              <button class="add-btn" (click)="setView('services')">Manage</button>
+            </div>
+            <div class="services-list">
+              @for (service of garageServices.slice(0, 5); track service.id) {
+                <div class="service-item">
+                  <span class="service-icon">{{ service.icon }}</span>
+                  <div class="service-info">
+                    <span class="service-name">{{ service.name }}</span>
+                    <span class="service-price">KES {{ service.price | number }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="stats-card">
+            <div class="stat-item">
+              <span class="stat-number">{{ totalMechanics }}</span>
+              <span class="stat-label">Mechanics</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">{{ totalServices }}</span>
+              <span class="stat-label">Services</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">{{ customerRating }}</span>
+              <span class="stat-label">Rating</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Jobs View -->
+    @if(currentView === 'jobs') {
+      <div class="jobs-view">
+        <div class="view-header">
+          <h2>Job Management</h2>
+          <div class="filter-controls">
+            <select class="filter-select" [(ngModel)]="jobFilter" (change)="filterJobs()">
+              <option value="all">All Jobs</option>
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="jobs-grid">
+          @if(filteredJobs.length === 0) {
+            <div class="empty-state-large">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              <h3>No Jobs Found</h3>
+              <p>No jobs match the current filter</p>
+            </div>
+          } @else {
+            @for(job of filteredJobs; track job.id) {
+              <div class="job-card-large">
+                <div class="job-card-header">
+                  <div class="job-customer">
+                    <div class="customer-avatar large">{{ job.customer[0] }}</div>
+                    <div>
+                      <h4>{{ job.customer }}</h4>
+                      <p>{{ job.vehicle }}</p>
+                    </div>
+                  </div>
+                  <span class="status-badge" [class]="job.status.toLowerCase()">{{ job.status }}</span>
+                </div>
+                <div class="job-card-body">
+                  <div class="job-detail">
+                    <span class="detail-label">Service</span>
+                    <span class="detail-value">{{ job.service }}</span>
+                  </div>
+                  <div class="job-detail">
+                    <span class="detail-label">Mechanic</span>
+                    <span class="detail-value">{{ job.mechanic }}</span>
+                  </div>
+                  <div class="job-detail">
+                    <span class="detail-label">Date</span>
+                    <span class="detail-value">{{ job.date | date:'MMM d, y' }}</span>
+                  </div>
+                  <div class="job-detail">
+                    <span class="detail-label">Amount</span>
+                    <span class="detail-value">KES {{ job.amount | number }}</span>
+                  </div>
+                </div>
+                <div class="job-card-footer">
+                  @if(job.status === 'Pending') {
+                    <button class="btn-secondary-small" (click)="assignMechanic(job)">Assign Mechanic</button>
+                  }
+                  <button class="btn-primary-small" (click)="viewJobDetails(job)">View Details</button>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Profile View -->
+    @if(currentView === 'profile') {
+      <div class="profile-view">
+        @if(loadingProfile) {
+          <div class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Loading profile...</p>
+          </div>
+        } @else {
+          
+          <!-- Profile Header -->
+          <div class="profile-header-card">
+            <div class="profile-banner"></div>
+            <div class="profile-header-content">
+              <div class="profile-avatar-section">
+                <div class="garage-icon-large">
+                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="profile-header-info">
+                <h2>{{ garageData?.businessName ?? 'Your Garage' }}</h2>
+                <p class="garage-address">{{ garageData?.physicalAddress ?? 'Address' }}</p>
+                <div class="profile-quick-stats">
+                  <div class="quick-stat">
+                    <strong>{{ totalMechanics }}</strong>
+                    <span>Mechanics</span>
+                  </div>
+                  <div class="quick-stat">
+                    <strong>{{ totalServices }}</strong>
+                    <span>Services</span>
+                  </div>
+                  <div class="quick-stat">
+                    <strong>{{ customerRating }}</strong>
+                    <span>⭐ Rating</span>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-edit-profile" (click)="toggleEditMode()">
+                @if(!editMode) {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit Profile
+                } @else {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Save Changes
+                }
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile Content -->
+          <div class="profile-content-grid">
+            
+            <!-- Business Information -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <h3>Business Information</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>Business Name</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.businessName ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="text" [(ngModel)]="garageData.businessName" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Registration Number</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.registrationNumber ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="text" [(ngModel)]="garageData.registrationNumber" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field full-width">
+                  <label>License Number</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.licenseNumber ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="text" [(ngModel)]="garageData.licenseNumber" class="profile-input">
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <h3>Contact Information</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>Email Address</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.businessEmail ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="email" [(ngModel)]="garageData.businessEmail" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Phone Number</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.phoneNumber ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="tel" [(ngModel)]="garageData.phoneNumber" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field full-width">
+                  <label>Physical Address</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.physicalAddress ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <textarea [(ngModel)]="garageData.physicalAddress" class="profile-input" rows="2"></textarea>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Operating Hours -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <h3>Operating Hours</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>Operating Days</label>
+                  <span>{{ getOperatingDays() }}</span>
+                </div>
+                <div class="profile-field">
+                  <label>Hours</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.openingTime ?? '00:00' }} - {{ garageData?.closingTime ?? '00:00' }}</span>
+                  } @else if(garageData) {
+                    <div class="time-edit-row">
+                      <input type="time" [(ngModel)]="garageData.openingTime" class="profile-input">
+                      <span>to</span>
+                      <input type="time" [(ngModel)]="garageData.closingTime" class="profile-input">
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <h3>Payment Information</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>M-Pesa Paybill</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.paybillNumber ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="text" [(ngModel)]="garageData.paybillNumber" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Account Number</label>
+                  @if(!editMode) {
+                    <span>{{ garageData?.accountNumber ?? 'N/A' }}</span>
+                  } @else if(garageData) {
+                    <input type="text" [(ngModel)]="garageData.accountNumber" class="profile-input">
+                  }
+                </div>
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Mechanics View Placeholder -->
+    <!-- @if(currentView === 'mechanics') {
+      <div class="placeholder-view">
+        <div class="placeholder-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <h2>Mechanic Management</h2>
+        <p>Use your existing mechanic management template</p>
+        <button class="btn-primary" (click)="navigateToMechanicManagement()">
+          Go to Mechanic Management
+        </button>
+      </div>
+    } -->
+
+    <!-- Services View Placeholder -->
+    @if(currentView === 'services') {
+      <div class="placeholder-view">
+        <div class="placeholder-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
+        <h2>Service Management</h2>
+        <p>Manage your garage services and pricing</p>
+      </div>
+    }
+
+    <!-- Revenue View Placeholder -->
+    @if(currentView === 'revenue') {
+      <div class="placeholder-view">
+        <div class="placeholder-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <h2>Revenue Analytics</h2>
+        <p>Detailed revenue reports and financial analytics coming soon</p>
+      </div>
+    }
+
+  </main>
+
+</div>

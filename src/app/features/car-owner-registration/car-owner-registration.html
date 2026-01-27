@@ -1,0 +1,84 @@
+<!-- INTRO SCREEN - Shows first (currentStep === -1) -->
+@if (currentStep === -1) {
+<div class="intro-screen">
+  <div class="left">
+    <h1>Get started with <span style="color: var(--primary-orange);">garage</span></h1>
+    <p>Let's get started in 3 quick steps</p>
+  </div>
+
+  <div class="right">
+    <h2>Quick Setup</h2>
+    <ol>
+      <li>Personal Information</li>
+      <li>Vehicle Information</li>
+      <li>Service History</li>
+    </ol>
+    <button (click)="nextStep()">Start Setup</button>
+  </div>
+</div>
+}
+
+<!-- MAIN FORM - Shows when currentStep >= 0 -->
+@if(currentStep >= 0) {
+<div class="form-card">
+  
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+  </div>
+
+  <!-- Step Counter -->
+  <div class="step-indicator" style="text-align: center; margin: 15px 0; color: var(--text-secondary); font-weight: 600;">
+    Step {{currentStep + 1}} of {{maxSteps}}
+  </div>
+
+  <!-- Stepper Navigation -->
+  <div class="stepper">
+    <div
+      *ngFor="let step of steps; let i = index"
+      (click)="goToStep(i)"
+      [class.active]="i === currentStep"
+      [class.completed]="i < currentStep">
+      {{i + 1}}. {{step}}
+    </div>
+  </div>
+
+  <!-- Step Content -->
+  <div class="step-content">
+    @switch (currentStep) {
+      
+      @case (0) {
+        <app-personal-details [group]="personalForm"></app-personal-details>
+      }
+
+      @case (1) {
+        <app-vehicle-details [group]="vehicleForm"></app-vehicle-details>
+      }
+
+      @case (2) {
+        <app-service-details [group]="historyForm"></app-service-details>
+      }
+    }
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button (click)="prevStep()" [disabled]="currentStep === 0">
+      ← Back
+    </button>
+
+    @if (currentStep < steps.length - 1) {
+      <button (click)="nextStep()">
+        Next →
+      </button>
+    }
+
+    @if (currentStep === steps.length - 1) {
+      <button (click)="submit()">
+        Finish ✓
+      </button>
+    }
+  </div>
+
+</div>
+}

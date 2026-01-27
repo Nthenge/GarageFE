@@ -1,0 +1,537 @@
+<div class="dashboard-wrapper">
+  
+  <!-- Top Navigation Bar -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <h1>{{ getPageTitle() }}</h1>
+    </div>
+    <div class="header-right">
+      <button class="notification-btn" (click)="toggleNotifications()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        @if(notificationCount > 0) {
+          <span class="badge">{{ notificationCount }}</span>
+        }
+      </button>
+      <div class="user-profile" (click)="toggleProfileMenu()">
+        <img [src]="mechanicData.profilePicture || 'assets/default-avatar.png'" alt="Profile" class="header-avatar">
+        <div class="user-info">
+          <span class="user-name">{{ mechanicData.name || 'Mechanic' }}</span>
+          <span class="user-role">Mechanic</span>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-logo">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+      @if(!sidebarCollapsed) {
+        <span>Mechanic Hub</span>
+      }
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a class="nav-link" [class.active]="currentView === 'dashboard'" (click)="setView('dashboard')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Dashboard</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'profile'" (click)="setView('profile')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Profile</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'jobs'" (click)="setView('jobs')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Jobs</span>
+          @if(activeJobs.length > 0) {
+            <span class="count-badge">{{ activeJobs.length }}</span>
+          }
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'schedule'" (click)="setView('schedule')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Schedule</span>
+        }
+      </a>
+      
+      <a class="nav-link" [class.active]="currentView === 'earnings'" (click)="setView('earnings')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Earnings</span>
+        }
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a class="nav-link" (click)="logout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        @if(!sidebarCollapsed) {
+          <span>Logout</span>
+        }
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    
+    <!-- Dashboard View -->
+    @if(currentView === 'dashboard') {
+      <div class="dashboard-container">
+        <!-- LEFT SECTION -->
+        <div class="dashboard-left">
+          <!-- Active Jobs Banner -->
+          <div class="quick-actions-banner mechanic">
+            <div class="banner-content">
+              <h3>Active Jobs</h3>
+              <p>You have {{ activeJobs.length }} jobs in progress</p>
+            </div>
+            <button class="cta-btn" (click)="setView('jobs')">
+              View All →
+            </button>
+          </div>
+
+          <!-- Current Job Card -->
+          @if (currentJob) {
+            <div class="status-card active">
+              <div class="card-header">
+                <h3>
+                  <span class="status-indicator active"></span>
+                  Current Job
+                </h3>
+                <span class="priority-badge high">Priority</span>
+              </div>
+              <div class="card-body">
+                <div class="info-row">
+                  <span class="label">Customer:</span>
+                  <span class="value">{{ currentJob.customerName }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Service:</span>
+                  <span class="value">{{ currentJob.serviceType }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Vehicle:</span>
+                  <span class="value">{{ currentJob.vehicle }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">Time Elapsed:</span>
+                  <span class="value timer">{{ currentJob.timeElapsed }}</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn-action primary">Update Status</button>
+                <button class="btn-action secondary">View Details</button>
+              </div>
+            </div>
+          } @else {
+            <div class="status-card empty">
+              <div class="empty-state">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="2">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+                <p>No active job</p>
+              </div>
+            </div>
+          }
+
+          <!-- Pending Jobs -->
+          <div class="service-section">
+            <h3>Pending Jobs ({{ pendingJobs.length }})</h3>
+            <div class="jobs-list">
+              @if(pendingJobs.length === 0) {
+                <div class="empty-state-small">
+                  <p>No pending jobs</p>
+                </div>
+              } @else {
+                @for (job of pendingJobs; track job.id) {
+                  <div class="job-card">
+                    <div class="job-header">
+                      <div class="job-icon">🔧</div>
+                      <div class="job-info">
+                        <h4>{{ job.serviceType }}</h4>
+                        <p>{{ job.customerName }} • {{ job.vehicle }}</p>
+                      </div>
+                      <span class="job-time">{{ job.requestedTime }}</span>
+                    </div>
+                    <div class="job-actions">
+                      <button class="btn-accept" (click)="acceptJob(job)">Accept Job</button>
+                      <button class="btn-decline" (click)="declineJob(job)">Decline</button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SECTION -->
+        <div class="dashboard-right">
+          <!-- Today's Schedule -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3>Today's Schedule</h3>
+              <span class="date-badge">{{ today | date:'MMM d' }}</span>
+            </div>
+            <div class="card-body">
+              @if(schedule.length === 0) {
+                <div class="empty-state-small">
+                  <p>No appointments today</p>
+                </div>
+              } @else {
+                @for (slot of schedule; track slot.id) {
+                  <div class="schedule-item" [class.active]="slot.active">
+                    <div class="time-badge">{{ slot.time }}</div>
+                    <div class="schedule-details">
+                      <span class="schedule-service">{{ slot.service }}</span>
+                      <span class="schedule-customer">{{ slot.customer }}</span>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
+          <!-- Performance Stats -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3>This Week</h3>
+            </div>
+            <div class="stats-mini-grid">
+              <div class="stat-mini">
+                <span class="stat-mini-number">{{ weeklyStats.jobsDone }}</span>
+                <span class="stat-mini-label">Jobs Done</span>
+              </div>
+              <div class="stat-mini">
+                <span class="stat-mini-number">{{ weeklyStats.rating }}</span>
+                <span class="stat-mini-label">Rating</span>
+              </div>
+              <div class="stat-mini">
+                <span class="stat-mini-number">{{ weeklyStats.earned }}K</span>
+                <span class="stat-mini-label">Earned</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="info-card">
+            <div class="card-header">
+              <h3>Quick Actions</h3>
+            </div>
+            <div class="quick-actions-grid">
+              <button class="action-tile" (click)="reportIssue()">
+                <span class="tile-icon">📋</span>
+                <span>Report Issue</span>
+              </button>
+              <button class="action-tile" (click)="callSupport()">
+                <span class="tile-icon">📞</span>
+                <span>Call Support</span>
+              </button>
+              <button class="action-tile" (click)="setView('earnings')">
+                <span class="tile-icon">💰</span>
+                <span>Earnings</span>
+              </button>
+              <button class="action-tile" (click)="openSettings()">
+                <span class="tile-icon">⚙️</span>
+                <span>Settings</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Profile View -->
+    @if(currentView === 'profile') {
+      <div class="profile-view">
+        @if(loadingProfile) {
+          <div class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Loading profile...</p>
+          </div>
+        } 
+        @else {
+          <!-- Profile Header -->
+          <div class="profile-header-card">
+            <div class="profile-banner"></div>
+            <div class="profile-header-content">
+              <div class="profile-avatar-section">
+                <img [src]="mechanicData.profilePicture || 'assets/default-avatar.png'" alt="Profile" class="profile-avatar-large">
+                <button class="change-avatar-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                </button>
+              </div>
+              <div class="profile-header-info">
+                <h2>{{ mechanicData.name || 'Mechanic Name' }}</h2>
+                <p class="specialization">{{ mechanicData.specializationArea || 'Specialization' }}</p>
+                <div class="profile-quick-stats">
+                  <div class="quick-stat">
+                    <strong>{{ mechanicData.yearsOfExperience || 0 }}</strong>
+                    <span>Years Exp.</span>
+                  </div>
+                  <div class="quick-stat">
+                    <strong>{{ dashboardStats.completedJobs }}</strong>
+                    <span>Jobs Done</span>
+                  </div>
+                  <div class="quick-stat">
+                    <strong>{{ dashboardStats.rating }}</strong>
+                    <span>⭐ Rating</span>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-edit-profile" (click)="toggleEditMode()">
+                @if(!editMode) {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit Profile
+                } @else {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  Save Changes
+                }
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile Content Grid -->
+          <div class="profile-content-grid">
+            <!-- Personal Information -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <h3>Personal Information</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>National ID Number</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.nationalIdNumber || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.nationalIdNumber" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Phone Number</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.phone || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.phone" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Alternative Phone</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.alternativePhone || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.alternativePhone" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field full-width">
+                  <label>Physical Address</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.physicalAddress || 'N/A' }}</span>
+                  } @else {
+                    <textarea [(ngModel)]="mechanicData.physicalAddress" class="profile-input" rows="2"></textarea>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <h3>Emergency Contact</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>Contact Name</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.emergencyContactName || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.emergencyContactName" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Contact Number</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.emergencyContactNumber || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.emergencyContactNumber" class="profile-input">
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Professional Details -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <h3>Professional Details</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="profile-field">
+                  <label>Years of Experience</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.yearsOfExperience || 0 }} years</span>
+                  } @else {
+                    <input type="number" [(ngModel)]="mechanicData.yearsOfExperience" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Specialization Area</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.specializationArea || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.specializationArea" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field full-width">
+                  <label>Vehicle Brands</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.vehiclebrands || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.vehiclebrands" class="profile-input">
+                  }
+                </div>
+                <div class="profile-field">
+                  <label>Garage ID</label>
+                  @if(!editMode) {
+                    <span>{{ mechanicData.garageId || 'N/A' }}</span>
+                  } @else {
+                    <input type="text" [(ngModel)]="mechanicData.garageId" class="profile-input">
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification Documents -->
+            <div class="profile-card">
+              <div class="profile-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b35" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <h3>Verification Documents</h3>
+              </div>
+              <div class="profile-card-body">
+                <div class="documents-list">
+                  <div class="document-item verified">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>National ID</span>
+                  </div>
+                  <div class="document-item verified">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Police Clearance</span>
+                  </div>
+                  <div class="document-item verified">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Professional Certificate</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        }
+
+      </div>
+
+    }
+ <!-- Jobs View Placeholder -->
+    @if(currentView === 'jobs') {
+      <div class="placeholder-view">
+        <h2>Jobs Management</h2>
+        <p>Complete jobs management interface coming soon...</p>
+      </div>
+    }
+
+    <!-- Schedule View Placeholder -->
+    @if(currentView === 'schedule') {
+      <div class="placeholder-view">
+        <h2>Schedule Management</h2>
+        <p>Calendar and availability management coming soon...</p>
+      </div>
+    }
+
+    <!-- Earnings View Placeholder -->
+    @if(currentView === 'earnings') {
+      <div class="placeholder-view">
+        <h2>Earnings & Payments</h2>
+        <p>Financial tracking and payment history coming soon...</p>
+      </div>
+    }
+
+  </main>
+
+</div>

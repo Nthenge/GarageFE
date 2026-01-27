@@ -1,0 +1,67 @@
+<div class="management-container">
+  <div class="page-header">
+    <div>
+      <h1>Categories & Services</h1>
+      <p>Manage service categories and individual services</p>
+    </div>
+    <button class="btn-primary" (click)="openAddDialog('category')">
+      <span>+</span>
+      Add Category
+    </button>
+  </div>
+
+  <!-- Categories List -->
+  @for (category of categories; track category.id) {
+    <div class="category-section">
+      <div class="category-header">
+        <div class="category-title">
+          <span class="category-icon">{{ category.icon }}</span>
+          <div>
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.description }}</p>
+          </div>
+        </div>
+        <div class="category-actions">
+          <button class="btn-add-service" (click)="openAddDialog('service', category)">
+            + Add Service
+          </button>
+          <button class="btn-icon" (click)="editCategory(category)">✏️</button>
+          <button class="btn-icon danger" (click)="deleteCategory(category)">🗑️</button>
+        </div>
+      </div>
+
+      <!-- Services Table -->
+      <div class="services-table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Service Name</th>
+              <th>Description</th>
+              <th>Avg. Duration</th>
+              <th>Base Price Range</th>
+              <th>Garages Offering</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (service of category.services; track service.id) {
+              <tr>
+                <td class="service-name">{{ service.name }}</td>
+                <td class="service-desc">{{ service.description }}</td>
+                <td>{{ service.avgDuration }}</td>
+                <td class="price-range">KES {{ service.minPrice | number }} - {{ service.maxPrice | number }}</td>
+                <td class="text-center">{{ service.garageCount }}</td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn-icon" (click)="editService(service)">✏️</button>
+                    <button class="btn-icon danger" (click)="deleteService(service)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>

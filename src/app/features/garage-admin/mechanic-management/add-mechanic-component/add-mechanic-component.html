@@ -1,0 +1,43 @@
+<div class="management-container">
+  <div class="page-header">
+    <div>
+      <h1>Add New Mechanic</h1>
+      <p>Fill in the details to register a new team member</p>
+    </div>
+  </div>
+
+  <div class="form-card" style="background: white; padding: 2rem; border-radius: 12px; max-width: 600px;">
+    <form [formGroup]="mechanicForm" (ngSubmit)="onSubmit()">
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <label>First Name</label>
+          <input type="text" formControlName="firstname" placeholder="Enter first name" class="form-control">
+        </div>
+        <div>
+          <label>Second Name</label>
+          <input type="text" formControlName="secondname" placeholder="Enter second name" class="form-control">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <label>Email Address</label>
+        <input type="email" formControlName="email" placeholder="mechanic@garage.com" class="form-control">
+      </div>
+
+      <div style="margin-bottom: 2rem;">
+        <label>Phone Number</label>
+        <input type="text" formControlName="phoneNumber" placeholder="e.g. 0712345678" class="form-control">
+      </div>
+
+      <div class="mechanic-card-footer" style="border-top: none; padding: 0;">
+        <button type="button" class="btn-icon-text" (click)="cancel()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Creating...' : 'Create Mechanic' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

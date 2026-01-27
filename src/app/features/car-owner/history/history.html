@@ -1,0 +1,101 @@
+<div class="history-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Service History</h1>
+      <p>Track all your garage service requests and payments</p>
+    </div>
+    <button class="export-btn">
+      <span>📥</span>
+      Export Report
+    </button>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-section">
+    <div class="filter-chips">
+      @for (f of filters; track f) {
+        <button 
+          class="filter-chip" 
+          [class.active]="f === activeFilter"
+          (click)="setFilter(f)">
+          {{ f }}
+        </button>
+      }
+    </div>
+
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Search garage or service..."
+        (keyup)="applyFilter($event)">
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Service Type</th>
+          <th>Garage</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of dataSource.filteredData; track item) {
+          <tr>
+            <td>
+              <div class="date-cell">
+                <span class="date">{{ item.date | date:'MMM d' }}</span>
+                <span class="year">{{ item.date | date:'yyyy' }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="service-cell">
+                <span class="service-icon">{{ getServiceIcon(item.serviceType) }}</span>
+                <span>{{ item.serviceType }}</span>
+              </div>
+            </td>
+            <td class="garage-name">{{ item.garage }}</td>
+            <td class="price">KES {{ item.price | number }}</td>
+            <td>
+              <span class="status-badge" [class]="item.status.toLowerCase()">
+                {{ item.status }}
+              </span>
+            </td>
+            <td>
+              <button class="action-btn" (click)="viewDetails(item)">
+                <span>👁️</span>
+                View
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (dataSource.filteredData.length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">📋</span>
+        <h3>No service history found</h3>
+        <p>Start by requesting your first service</p>
+      </div>
+    }
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-btn" [disabled]="currentPage === 1">
+        ← Previous
+      </button>
+      <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="page-btn" [disabled]="currentPage === totalPages">
+        Next →
+      </button>
+    </div>
+  </div>
+</div>

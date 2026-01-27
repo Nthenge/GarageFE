@@ -1,0 +1,175 @@
+<div class="overlay" (click)="onCancel()"></div>
+
+<div class="register-modal" (click)="$event.stopPropagation()">
+  <button class="close-btn" (click)="onCancel()" type="button">
+    ✕
+  </button>
+
+  <div class="modal-header">
+    <h2>Create Account</h2>
+    <p>Join our garage management system</p>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <span class="alert-icon">✓</span>
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      <span class="alert-icon">⚠</span>
+      {{ errorMessage }}
+    </div>
+  }
+
+  <form [formGroup]="registerForm" (ngSubmit)="registerOnSubmit()">
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name <span class="required">*</span></label>
+        <input 
+          type="text" 
+          formControlName="firstname"
+          placeholder="Enter first name"
+          [class.error-input]="registerForm.get('firstname')?.touched && registerForm.get('firstname')?.invalid">
+        
+        @if (registerForm.get('firstname')?.touched && registerForm.get('firstname')?.hasError('required')) {
+          <span class="error-text">First name is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Last Name <span class="required">*</span></label>
+        <input 
+          type="text" 
+          formControlName="secondname"
+          placeholder="Enter last name"
+          [class.error-input]="registerForm.get('secondname')?.touched && registerForm.get('secondname')?.invalid">
+
+        @if (registerForm.get('secondname')?.touched && registerForm.get('secondname')?.hasError('required')) {
+          <span class="error-text">Last name is required</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address <span class="required">*</span></label>
+      <input 
+        type="email" 
+        formControlName="email"
+        placeholder="your@email.com"
+        [class.error-input]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+      
+      @if (registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')) {
+        <span class="error-text">Email is required</span>
+      } 
+      
+      @if (registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')) {
+        <span class="error-text">Enter a valid email address</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number <span class="required">*</span></label>
+      <input 
+        type="tel" 
+        formControlName="phoneNumber"
+        placeholder="07XXXXXXXX"
+        [class.error-input]="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid">
+
+      @if (registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('required')) {
+        <span class="error-text">Phone number is required</span>
+      }
+
+      @if (registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('pattern')) {
+        <span class="error-text">Phone number must be 10 digits</span>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Password <span class="required">*</span></label>
+        <input 
+          type="password" 
+          formControlName="password"
+          placeholder="••••••••"
+          (input)="serverFieldErrors.password = null"
+          [class.error-input]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid || serverFieldErrors.password">
+
+        @if (registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')) {
+          <span class="error-text">Password is required</span>
+        }
+
+        @if (serverFieldErrors.password) {
+          <span class="error-text backend-error">{{ serverFieldErrors.password }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password <span class="required">*</span></label>
+        <input 
+          type="password" 
+          formControlName="confirmPassword"
+          placeholder="••••••••"
+          [class.error-input]="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid || passwordMismatch">
+
+        @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('required')) {
+          <span class="error-text">Confirm your password</span>
+        }
+
+        @if (passwordMismatch) {
+          <span class="error-text">Passwords do not match</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>I am a <span class="required">*</span></label>
+      <div class="role-options">
+        <label class="role-card" [class.selected]="registerForm.get('role')?.value === 'CAR_OWNER'">
+          <input type="radio" formControlName="role" value="CAR_OWNER">
+          <div class="role-content">
+            <span class="role-icon">🚗</span>
+            <span class="role-text">Car Owner</span>
+          </div>
+        </label>
+
+        <label class="role-card" [class.selected]="registerForm.get('role')?.value === 'GARAGE_ADMIN'">
+          <input type="radio" formControlName="role" value="GARAGE_ADMIN">
+          <div class="role-content">
+            <span class="role-icon">🏢</span>
+            <span class="role-text">Garage Admin</span>
+          </div>
+        </label>
+      </div>
+
+      @if (registerForm.get('role')?.touched && registerForm.get('role')?.hasError('required')) {
+        <span class="error-text">Please select your role</span>
+      }
+    </div>
+
+    <button 
+      type="submit" 
+      class="submit-btn"
+      [disabled]="isLoading || registerForm.invalid"
+      [class.loading]="isLoading">
+      
+      @if (!isLoading) {
+        <span>Create Account</span>
+      }
+
+      @if (isLoading) {
+        <span class="spinner"></span>
+        <span>Creating account...</span>
+      }
+    </button>
+
+    <p>
+      Already have an account? 
+      <span class="login-link" (click)="openLoginFromRegister($event)">Sign in</span>
+    </p>
+
+  </form>
+</div>
