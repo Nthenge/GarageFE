@@ -1,4 +1,3 @@
-<!-- mechanic-registration.component.html -->
 <div class="setup-page">
   <div class="setup-card">
     <header class="card-header">
@@ -15,7 +14,6 @@
     </div>
 
     <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" class="form-body">
-      <!-- STEP 1 - Personal -->
       @if(currentStep===1) {
         <section class="section">
           <h3>Personal information</h3>
@@ -69,7 +67,6 @@
         </section>
       }
 
-      <!-- STEP 2 - Professional -->
       @if(currentStep===2) {
         <section class="section">
           <h3>Professional qualifications</h3>
@@ -98,19 +95,10 @@
                 <small class="error">Required</small>
               }
             </label>
-
-            <label class="field">
-              <span>Garage ID *</span>
-              <input formControlName="garageId" placeholder="Affiliated Garage ID" />
-              @if(submitted && setupForm.get('garageId')?.invalid) {
-                <small class="error">Required</small>
-              }
-            </label>
           </div>
         </section>
       }
 
-      <!-- STEP 3 - Documents -->
       @if(currentStep===3) {
         <section class="section">
           <h3>Verification documents</h3>
@@ -123,12 +111,17 @@
 
             <label class="field full">
               <span>Police Clearance</span>
-              <input type="file" (change)="onFileChange($event, 'policeClearanceCertfificate')" accept=".pdf,.jpg,.png" />
+              <input type="file" (change)="onFileChange($event, 'policeClearanceCertificate')" accept=".pdf,.jpg,.png" />
             </label>
 
             <label class="field full">
-              <span>Certificates</span>
+              <span>Proffesional Certificate</span>
               <input type="file" (change)="onFileChange($event, 'professionalCertificate')" accept=".pdf,.jpg,.png" />
+            </label>
+
+            <label class="field full">
+              <span>Any Other Relevant Certificate</span>
+              <input type="file" (change)="onFileChange($event, 'anyRelevantCertificate')" accept=".pdf,.jpg,.png" />
             </label>
 
             <div class="review">
