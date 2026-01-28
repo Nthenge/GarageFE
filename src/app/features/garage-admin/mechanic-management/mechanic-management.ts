@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 interface Mechanic {
   id: string;
@@ -13,7 +14,7 @@ interface Mechanic {
 
 @Component({
   selector: 'app-mechanic-management',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './mechanic-management.html',
   styleUrl: './mechanic-management.css'
 })
